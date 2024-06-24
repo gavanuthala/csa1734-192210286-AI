@@ -1,0 +1,71 @@
+from collections import deque
+def is_valid_state(state, capacities):
+    return 0 <= state[0] <= capacities[0] and 0 <= state[1] <= capacities[1]
+
+def get_possible_moves(state, capacities):
+    moves = []
+    jug1, jug2 = state
+    # Fill Jug1
+    moves.append((capacities[0], jug2))
+    # Fill Jug2
+    moves.append((jug1, capacities[1]))
+    # Empty Jug1
+    moves.append((0, jug2))
+    # Empty Jug2
+    moves.append((jug1, 0))
+    # Pour Jug1 into Jug2
+    pour_to_jug2 = min(jug1, capacities[1] - jug2)
+    moves.append((jug1 - pour_to_jug2, jug2 + pour_to_jug2))
+    # Pour Jug2 into Jug1
+    pour_to_jug1 = min(jug2, capacities[0] - jug1)
+    moves.append((jug1 + pour_to_jug1, jug2 - pour_to_jug1))
+    # Return only valid moves
+    return [move for move in moves if is_valid_state(move, capacities)]
+
+def bfs(initial_state, capacities, goal):
+    queue = deque([(initial_state, [])])
+    visited = set()
+    visited.add(initial_state)
+
+    while queue:
+        (current_state, path) = queue.popleft()
+        if current_state[0] == goal or current_state[1] == goal:
+            return path + [current_state]
+
+        for move in get_possible_moves(current_state, capacities):
+            if move not in visited:
+                visited.add(move)
+                queue.append((move, path + [current_state]))
+
+    return None
+
+def solve_water_jug_problem(capacity1, capacity2, goal):
+    initial_state = (0, 0)
+    capacities = (capacity1, capacity2)
+    solution_path = bfs(initial_state, capacities, goal)
+    print("capacity of two jar are ",capacity1," and ",capacity2," where goal is ",goal)
+    print("steps to solve the water jug problemare \n")
+    if solution_path:
+        for step in solution_path:
+            print(f"Jug1: {step[0]}, Jug2: {step[1]}")
+    else:
+        print("No solution found.")
+# Example usage
+capacity1 = 4
+capacity2 = 3
+goal = 2
+solve_water_jug_problem(capacity1, capacity2, goal)
+
+
+
+
+
+output:
+capacity of two jar are  4  and  3  where goal is  2
+steps to solve the water jug problemare 
+
+Jug1: 0, Jug2: 0
+Jug1: 0, Jug2: 3
+Jug1: 3, Jug2: 0
+Jug1: 3, Jug2: 3
+Jug1: 4, Jug2: 2
