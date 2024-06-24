@@ -1,0 +1,41 @@
+# Sample graph represented as adjacency list
+graph = {
+    'A': ['B', 'C'],
+    'B': ['A', 'D', 'E'],
+    'C': ['A', 'F'],
+    'D': ['B'],
+    'E': ['B', 'F'],
+    'F': ['C', 'E']
+}
+
+def dfs(graph, start, visited):
+    if start not in visited:
+        visited.add(start)
+        print(f"Visited node: {start}")
+
+        for neighbor in graph[start]:
+            if neighbor not in visited:
+                print(f"    Going to neighbor: {neighbor}")
+                dfs(graph, neighbor, visited)
+
+if __name__ == "__main__":
+    print("Depth-First Search (DFS) starting from node 'A':")
+    visited = set()
+    dfs(graph, 'A', visited)
+
+
+
+output :
+
+Depth-First Search (DFS) starting from node 'A':
+Visited node: A
+    Going to neighbor: B
+Visited node: B
+    Going to neighbor: D
+Visited node: D
+    Going to neighbor: E
+Visited node: E
+    Going to neighbor: F
+Visited node: F
+    Going to neighbor: C
+Visited node: C
