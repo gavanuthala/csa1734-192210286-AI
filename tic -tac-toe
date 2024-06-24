@@ -1,0 +1,136 @@
+def tic_tac_toe():
+    """Main function to run the Tic Tac Toe game."""
+    board = [[' ' for _ in range(3)] for _ in range(3)]
+    players = ['X', 'O']
+    turn = 0
+
+    print("Welcome to Tic Tac Toe!")
+    print_board(board)
+
+    while True:
+        player = players[turn % 2]
+        print(f"Player {player}'s turn.")
+
+        while True:
+            try:
+                row = int(input("Enter row (0, 1, or 2): "))
+                if row < 0 or row > 2:
+                    raise ValueError("Row must be between 0 and 2.")
+                break
+            except ValueError as e:
+                print(e)
+
+        while True:
+            try:
+                col = int(input("Enter column (0, 1, or 2): "))
+                if col < 0 or col > 2:
+                    raise ValueError("Column must be between 0 and 2.")
+                break
+            except ValueError as e:
+                print(e)
+
+        if board[row][col] != ' ':
+            print("Invalid move. That space is already taken. Try again.")
+            continue
+
+        board[row][col] = player
+        print_board(board)
+
+        if check_win(board, player):
+            print(f"Player {player} wins!")
+            break
+
+        if check_draw(board):
+            print("It's a draw!")
+            break
+
+        turn += 1
+
+# Run the game
+tic_tac_toe()
+
+
+
+
+output: 
+Welcome to Tic Tac Toe with Minimax!
+  |   |  
+---------
+  |   |  
+---------
+  |   |  
+---------
+Player X chooses (0, 0)
+X |   |  
+---------
+  |   |  
+---------
+  |   |  
+---------
+Enter row (0, 1, or 2) for Player O: 1
+Enter column (0, 1, or 2) for Player O: 1
+X |   |  
+---------
+  | O |  
+---------
+  |   |  
+---------
+Player X chooses (0, 1)
+X | X |  
+---------
+  | O |  
+---------
+  |   |  
+---------
+Enter row (0, 1, or 2) for Player O: 2
+Enter column (0, 1, or 2) for Player O: 3
+list index out of range
+Enter row (0, 1, or 2) for Player O: 2
+Enter column (0, 1, or 2) for Player O: 6
+list index out of range
+Enter row (0, 1, or 2) for Player O: 0
+Enter column (0, 1, or 2) for Player O: 2
+X | X | O
+---------
+  | O |  
+---------
+  |   |  
+---------
+Player X chooses (2, 0)
+X | X | O
+---------
+  | O |  
+---------
+X |   |  
+---------
+Enter row (0, 1, or 2) for Player O: 1
+Enter column (0, 1, or 2) for Player O: 0
+X | X | O
+---------
+O | O |  
+---------
+X |   |  
+---------
+Player X chooses (1, 2)
+X | X | O
+---------
+O | O | X
+---------
+X |   |  
+---------
+Enter row (0, 1, or 2) for Player O: 2
+Enter column (0, 1, or 2) for Player O: 2
+X | X | O
+---------
+O | O | X
+---------
+X |   | O
+---------
+Player X chooses (2, 1)
+X | X | O
+---------
+O | O | X
+---------
+X | X | O
+---------
+It's a draw!
