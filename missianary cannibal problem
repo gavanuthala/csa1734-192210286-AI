@@ -1,0 +1,62 @@
+def missionary_cannibal_problem():
+    initial_state = (3, 3, 1)  # (missionaries on left, cannibals on left, boat position)
+
+    def is_valid(state):
+        m_left, c_left, boat = state
+        m_right, c_right = 3 - m_left, 3 - c_left
+
+        if m_left < 0 or c_left < 0 or m_right < 0 or c_right < 0:
+            return False
+        if m_left != 0 and m_left < c_left:
+            return False
+        if m_right != 0 and m_right < c_right:
+            return False
+        return True
+
+    def dfs(state, path):
+        m_left, c_left, boat = state
+
+        if state == (0, 0, 0):
+            print("Solution found:")
+            for i, (m_l, c_l, b) in enumerate(path):
+                print(f"Step {i+1}: Left Bank: {m_l} missionaries, {c_l} cannibals | Right Bank: {3-m_l} missionaries, {3-c_l} cannibals | Boat: {'Left' if b == 1 else 'Right'}")
+            return True
+
+        for move in [(1, 0), (2, 0), (0, 1), (0, 2), (1, 1)]:
+            if boat == 1:
+                new_state = (m_left - move[0], c_left - move[1], 0)
+            else:
+                new_state = (m_left + move[0], c_left + move[1], 1)
+
+            if is_valid(new_state) and new_state not in path:
+                path.append(new_state)
+                if dfs(new_state, path):
+                    return True
+                path.pop()
+
+        return False
+
+    print("Finding solution for Missionary and Cannibal problem:")
+    if not dfs(initial_state, [initial_state]):
+        print("No solution found.")
+
+if __name__ == "__main__":
+    missionary_cannibal_problem()
+
+
+
+output : 
+Finding solution for Missionary and Cannibal problem:
+Solution found:
+Step 1: Left Bank: 3 missionaries, 3 cannibals | Right Bank: 0 missionaries, 0 cannibals | Boat: Left
+Step 2: Left Bank: 3 missionaries, 1 cannibals | Right Bank: 0 missionaries, 2 cannibals | Boat: Right
+Step 3: Left Bank: 3 missionaries, 2 cannibals | Right Bank: 0 missionaries, 1 cannibals | Boat: Left
+Step 4: Left Bank: 3 missionaries, 0 cannibals | Right Bank: 0 missionaries, 3 cannibals | Boat: Right
+Step 5: Left Bank: 3 missionaries, 1 cannibals | Right Bank: 0 missionaries, 2 cannibals | Boat: Left
+Step 6: Left Bank: 1 missionaries, 1 cannibals | Right Bank: 2 missionaries, 2 cannibals | Boat: Right
+Step 7: Left Bank: 2 missionaries, 2 cannibals | Right Bank: 1 missionaries, 1 cannibals | Boat: Left
+Step 8: Left Bank: 0 missionaries, 2 cannibals | Right Bank: 3 missionaries, 1 cannibals | Boat: Right
+Step 9: Left Bank: 0 missionaries, 3 cannibals | Right Bank: 3 missionaries, 0 cannibals | Boat: Left
+Step 10: Left Bank: 0 missionaries, 1 cannibals | Right Bank: 3 missionaries, 2 cannibals | Boat: Right
+Step 11: Left Bank: 1 missionaries, 1 cannibals | Right Bank: 2 missionaries, 2 cannibals | Boat: Left
+Step 12: Left Bank: 0 missionaries, 0 cannibals | Right Bank: 3 missionaries, 3 cannibals | Boat: Right
