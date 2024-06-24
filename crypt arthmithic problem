@@ -1,0 +1,49 @@
+from itertools import permutations
+
+def solve_cryptarithm():
+    # The words involved in the cryptarithm problem
+    words = ["SEND", "MORE"]
+    result = "MONEY"
+
+    # Get all unique characters
+    unique_chars = set("".join(words) + result)
+
+    if len(unique_chars) > 10:
+        raise ValueError("Too many unique letters. Maximum is 10.")
+
+    # Generate all permutations of 10 digits taken len(unique_chars) at a time
+    for perm in permutations(range(10), len(unique_chars)):
+        # Create a dictionary mapping each unique character to a digit
+        char_to_digit = dict(zip(unique_chars, perm))
+
+        # Convert words to numbers using the current mapping
+        num1 = sum(char_to_digit[c] * (10 ** i) for i, c in enumerate(reversed(words[0])))
+        num2 = sum(char_to_digit[c] * (10 ** i) for i, c in enumerate(reversed(words[1])))
+        result_num = sum(char_to_digit[c] * (10 ** i) for i, c in enumerate(reversed(result)))
+
+        # Check if the current mapping satisfies the equation
+        if num1 + num2 == result_num:
+            # Print the solution
+            print("Solution found:")
+            for char in unique_chars:
+                print(f"{char} = {char_to_digit[char]}")
+            return
+
+    print("No solution found.")
+
+if __name__ == "__main__":
+    solve_cryptarithm()
+
+
+
+
+output :
+Solution found:
+M = 0
+D = 1
+S = 3
+Y = 9
+N = 2
+R = 6
+E = 8
+O = 4
