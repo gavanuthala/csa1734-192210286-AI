@@ -1,0 +1,58 @@
+from collections import deque
+
+# Sample graph represented as adjacency list
+graph = {
+    'A': ['B', 'C'],
+    'B': ['A', 'D', 'E'],
+    'C': ['A', 'F'],
+    'D': ['B'],
+    'E': ['B', 'F'],
+    'F': ['C', 'E']
+}
+
+def bfs(graph, start):
+    visited = set()          # To keep track of visited nodes
+    queue = deque([start])   # Initialize the queue with the starting node
+    visited.add(start)       # Mark the starting node as visited
+
+    while queue:
+        node = queue.popleft()
+        print(f"Visited node: {node}")
+
+        for neighbor in graph[node]:
+            if neighbor not in visited:
+                visited.add(neighbor)
+                queue.append(neighbor)
+                print(f"    Enqueued neighbor: {neighbor}")
+        print(f"Current queue: {list(queue)}")
+        print()
+
+if __name__ == "__main__":
+    print("Breadth-First Search (BFS) starting from node 'A':")
+    bfs(graph, 'A')
+
+
+output :
+Breadth-First Search (BFS) starting from node 'A':
+Visited node: A
+    Enqueued neighbor: B
+    Enqueued neighbor: C
+Current queue: ['B', 'C']
+
+Visited node: B
+    Enqueued neighbor: D
+    Enqueued neighbor: E
+Current queue: ['C', 'D', 'E']
+
+Visited node: C
+    Enqueued neighbor: F
+Current queue: ['D', 'E', 'F']
+
+Visited node: D
+Current queue: ['E', 'F']
+
+Visited node: E
+Current queue: ['F']
+
+Visited node: F
+Current queue: []
