@@ -1,0 +1,51 @@
+def is_valid(coloring, node, color, graph):
+    """Check if assigning the color to the node is valid."""
+    for neighbor in graph[node]:
+        if neighbor in coloring and coloring[neighbor] == color:
+            return False
+    return True
+
+def color_map(graph, colors, coloring={}, node=0):
+    """Solve the Map Coloring problem using backtracking."""
+    if node == len(graph):
+        return coloring
+
+    for color in colors:
+        if is_valid(coloring, node, color, graph):
+            coloring[node] = color
+            result = color_map(graph, colors, coloring, node + 1)
+            if result:
+                return result
+            del coloring[node]
+
+    return None
+
+# Example usage:
+# Define the map as an adjacency list (graph)
+graph = {
+    0: [1, 2],
+    1: [0, 2, 3],
+    2: [0, 1, 3],
+    3: [1, 2]
+}
+
+# Define the colors
+colors = ['Red', 'Green', 'Blue']
+
+# Solve the Map Coloring problem
+coloring = color_map(graph, colors)
+
+# Display the result
+if coloring:
+    for region, color in coloring.items():
+        print(f"Region {region}: {color}")
+else:
+    print("No solution found.")
+
+
+
+output:
+Region 0: Red
+Region 1: Green
+Region 2: Blue
+Region 3: Red
