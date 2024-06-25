@@ -1,0 +1,229 @@
+import math
+
+# Constants for players
+PLAYER_X = 'X'
+PLAYER_O = 'O'
+EMPTY = ' '
+
+def print_board(board):
+    """Print the current state of the board."""
+    for row in board:
+        print(" | ".join(row))
+        print("-" * 9)
+
+def evaluate(board):
+    """Evaluate the current state of the board."""
+    # Check rows
+    for row in board:
+        if all([cell == PLAYER_X for cell in row]):
+            return 10
+        elif all([cell == PLAYER_O for cell in row]):
+            return -10
+
+    # Check columns
+    for col in range(3):
+        if all([board[row][col] == PLAYER_X for row in range(3)]):
+            return 10
+        elif all([board[row][col] == PLAYER_O for row in range(3)]):
+            return -10
+
+    # Check diagonals
+    if all([board[i][i] == PLAYER_X for i in range(3)]):
+        return 10
+    elif all([board[i][i] == PLAYER_O for i in range(3)]):
+        return -10
+
+    if all([board[i][2-i] == PLAYER_X for i in range(3)]):
+        return 10
+    elif all([board[i][2-i] == PLAYER_O for i in range(3)]):
+        return -10
+
+    # If no winner yet
+    return 0
+
+def is_moves_left(board):
+    """Check if there are any empty cells left on the board."""
+    for row in board:
+        if EMPTY in row:
+            return True
+    return False
+
+def minimax(board, depth, is_maximizing):
+    """Minimax algorithm with alpha-beta pruning."""
+    score = evaluate(board)
+
+    # If maximizing player (X)
+    if score == 10:
+        return score - depth
+    # If minimizing player (O)
+    elif score == -10:
+        return score + depth
+    # If draw
+    elif not is_moves_left(board):
+        return 0
+
+    if is_maximizing:
+        best = -math.inf
+        for i in range(3):
+            for j in range(3):
+                if board[i][j] == EMPTY:
+                    board[i][j] = PLAYER_X
+                    best = max(best, minimax(board, depth + 1, not is_maximizing))
+                    board[i][j] = EMPTY
+        return best
+    else:
+        best = math.inf
+        for i in range(3):
+            for j in range(3):
+                if board[i][j] == EMPTY:
+                    board[i][j] = PLAYER_O
+                    best = min(best, minimax(board, depth + 1, not is_maximizing))
+                    board[i][j] = EMPTY
+        return best
+
+def find_best_move(board):
+    """Find the best move using Minimax algorithm."""
+    best_val = -math.inf
+    best_move = (-1, -1)
+
+    for i in range(3):
+        for j in range(3):
+            if board[i][j] == EMPTY:
+                board[i][j] = PLAYER_X
+                move_val = minimax(board, 0, False)
+                board[i][j] = EMPTY
+
+                if move_val > best_val:
+                    best_val = move_val
+                    best_move = (i, j)
+
+    return best_move
+
+def tic_tac_toe():
+    """Main function to run the Tic Tac Toe game with Minimax."""
+    board = [[EMPTY for _ in range(3)] for _ in range(3)]
+    current_player = PLAYER_X
+
+    print("Welcome to Tic Tac Toe with Minimax!")
+    print_board(board)
+
+    while True:
+        if current_player == PLAYER_X:
+            row, col = find_best_move(board)
+            print(f"Player {current_player} chooses ({row}, {col})")
+        else:
+            while True:
+                try:
+                    row = int(input(f"Enter row (0, 1, or 2) for Player {current_player}: "))
+                    col = int(input(f"Enter column (0, 1, or 2) for Player {current_player}: "))
+                    if board[row][col] != EMPTY:
+                        raise ValueError("That space is already taken. Try again.")
+                    break
+                except (ValueError, IndexError) as e:
+                    print(e)
+
+        board[row][col] = current_player
+        print_board(board)
+
+        if evaluate(board) == 10:
+            print(f"Player {current_player} wins!")
+            break
+        elif not is_moves_left(board):
+            print("It's a draw!")
+            break
+
+        current_player = PLAYER_O if current_player == PLAYER_X else PLAYER_X
+
+# Run the game
+tic_tac_toe()
+
+
+
+
+
+
+
+
+
+output:
+Welcome to Tic Tac Toe with Minimax!
+  |   |  
+---------
+  |   |  
+---------
+  |   |  
+---------
+Player X chooses (0, 0)
+X |   |  
+---------
+  |   |  
+---------
+  |   |  
+---------
+Enter row (0, 1, or 2) for Player O: 1
+Enter column (0, 1, or 2) for Player O: 1
+X |   |  
+---------
+  | O |  
+---------
+  |   |  
+---------
+Player X chooses (0, 1)
+X | X |  
+---------
+  | O |  
+---------
+  |   |  
+---------
+Enter row (0, 1, or 2) for Player O: 2
+Enter column (0, 1, or 2) for Player O: 3
+list index out of range
+Enter row (0, 1, or 2) for Player O: 2
+Enter column (0, 1, or 2) for Player O: 6
+list index out of range
+Enter row (0, 1, or 2) for Player O: 0
+Enter column (0, 1, or 2) for Player O: 2
+X | X | O
+---------
+  | O |  
+---------
+  |   |  
+---------
+Player X chooses (2, 0)
+X | X | O
+---------
+  | O |  
+---------
+X |   |  
+---------
+Enter row (0, 1, or 2) for Player O: 1
+Enter column (0, 1, or 2) for Player O: 0
+X | X | O
+---------
+O | O |  
+---------
+X |   |  
+---------
+Player X chooses (1, 2)
+X | X | O
+---------
+O | O | X
+---------
+X |   |  
+---------
+Enter row (0, 1, or 2) for Player O: 2
+Enter column (0, 1, or 2) for Player O: 2
+X | X | O
+---------
+O | O | X
+---------
+X |   | O
+---------
+Player X chooses (2, 1)
+X | X | O
+---------
+O | O | X
+---------
+X | X | O
+---------
+It's a draw!
