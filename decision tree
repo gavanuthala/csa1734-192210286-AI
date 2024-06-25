@@ -1,0 +1,124 @@
+import pandas as pd
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.preprocessing import LabelEncoder
+
+# Sample dataset (dummy data)
+data = {
+    'Age': [25, 35, 45, 30, 22, 28, 32, 40, 38, 50],
+    'Income': ['Low', 'Low', 'Medium', 'Medium', 'Low', 'High', 'Medium', 'High', 'High', 'Medium'],
+    'Education': ['High School', 'Bachelor', 'Master', 'Bachelor', 'High School', 'Master', 'PhD', 'Bachelor', 'Master', 'PhD'],
+    'Loan_Status': ['No', 'No', 'Yes', 'Yes', 'No', 'Yes', 'Yes', 'No', 'Yes', 'No']
+}
+
+# Create a DataFrame
+df = pd.DataFrame(data)
+
+# Convert categorical variables to numerical labels
+label_encoders = {}
+for column in ['Income', 'Education', 'Loan_Status']:
+    label_encoders[column] = LabelEncoder()
+    df[column] = label_encoders[column].fit_transform(df[column])
+
+# Separate features (X) and target variable (y)
+X = df.drop(columns=['Loan_Status'])
+y = df['Loan_Status']
+
+# Initialize the decision tree classifier
+clf = DecisionTreeClassifier(random_state=42)
+
+# Train the classifier
+clf.fit(X, y)
+
+# Function to preprocess user input
+def preprocess_input(user_age, user_income_choice, user_education_choice):
+    # Convert choice numbers to corresponding labels
+    income_choices = {1: 'Low', 2: 'Medium', 3: 'High'}
+    education_choices = {1: 'High School', 2: 'Bachelor', 3: 'Master', 4: 'PhD'}
+
+    user_income = income_choices[user_income_choice]
+    user_education = education_choices[user_education_choice]
+
+    # Prepare input data for prediction
+    input_data = pd.DataFrame({
+        'Age': [user_age],
+        'Income': [user_income],
+        'Education': [user_education]
+    })
+
+    # Convert categorical variables to numerical labels
+    for column in ['Income', 'Education']:
+        input_data[column] = label_encoders[column].transform([user_income if column == 'Income' else user_education])[0]
+
+    return input_data
+
+# Function to predict loan status based on user input
+def predict_loan_status(user_age, user_income_choice, user_education_choice):
+    processed_input = preprocess_input(user_age, user_income_choice, user_education_choice)
+    prediction = clf.predict(processed_input)
+    predicted_status = label_encoders['Loan_Status'].inverse_transform(prediction)[0]
+    return predicted_status
+
+# Interactive input from user
+def get_user_input():
+    user_age = int(input("Enter your age: "))
+
+    print("Select your income level:")
+    print("1. Low")
+    print("2. Medium")
+    print("3. High")
+    user_income_choice = int(input("Enter your choice (1/2/3): "))
+
+    print("\nSelect your education level:")
+    print("1. High School")
+    print("2. Bachelor")
+    print("3. Master")
+    print("4. PhD")
+    user_education_choice = int(input("Enter your choice (1/2/3/4): "))
+
+    return user_age, user_income_choice, user_education_choice
+
+# Main program execution
+if __name__ == "__main__":
+    print("Welcome to Loan Eligibility Checker!")
+
+    while True:
+        try:
+            user_age, user_income_choice, user_education_choice = get_user_input()
+            loan_status = predict_loan_status(user_age, user_income_choice, user_education_choice)
+            print(f"\nBased on your input - Age: {user_age}, Income: {preprocess_input(user_age, user_income_choice, user_education_choice)['Income'][0]}, Education: {preprocess_input(user_age, user_income_choice, user_education_choice)['Education'][0]}")
+            print(f"You {'are eligible' if loan_status == 'Yes' else 'are not eligible'} for a loan.")
+        except KeyError:
+            print("Invalid choice. Please enter a valid number.")
+        except ValueError as e:
+            print(e)
+
+        choice = input("\nDo you want to check another person's eligibility? (yes/no): ")
+        if choice.lower() != 'yes':
+            break
+
+    print("\nThank you for using the Loan Eligibility Checker!")
+
+
+
+output: 
+Welcome to Loan Eligibility Checker!
+Enter your age: 21
+Select your income level:
+1. Low
+2. Medium
+3. High
+Enter your choice (1/2/3): 2
+
+Select your education level:
+1. High School
+2. Bachelor
+3. Master
+4. PhD
+Enter your choice (1/2/3/4): 2
+
+Based on your input - Age: 21, Income: 2, Education: 0
+You are eligible for a loan.
+
+Do you want to check another person's eligibility? (yes/no): no
+
+Thank you for using the Loan Eligibility Checker!
