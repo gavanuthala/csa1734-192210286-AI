@@ -1,0 +1,56 @@
+% Knowledge Base
+% Symptoms
+symptom(fever).
+symptom(cough).
+symptom(shortness_of_breath).
+symptom(chest_pain).
+symptom(fatigue).
+symptom(sore_throat).
+symptom(headache).
+symptom(nausea).
+symptom(diarrhea).
+
+% Diseases and their symptoms
+disease(covid19) :-
+    has_symptom(fever),
+    has_symptom(cough),
+    has_symptom(shortness_of_breath).
+
+disease(flu) :-
+    has_symptom(fever),
+    has_symptom(cough),
+    has_symptom(fatigue),
+    has_symptom(headache).
+
+disease(common_cold) :-
+    has_symptom(sore_throat),
+    has_symptom(cough),
+    has_symptom(fatigue).
+
+disease(stomach_flu) :-
+    has_symptom(nausea),
+    has_symptom(diarrhea),
+    has_symptom(fatigue).
+
+disease(pneumonia) :-
+    has_symptom(fever),
+    has_symptom(cough),
+    has_symptom(chest_pain),
+    has_symptom(shortness_of_breath).
+
+% Rules to check if a symptom is present
+has_symptom(Symptom) :- symptom(Symptom), write('Does the patient have '), write(Symptom), write('? '), read(yes).
+
+% Diagnosis rule
+diagnose(Disease) :-
+    disease(Disease),
+    write('The patient may have '), write(Disease), nl.
+
+% Main rule to start diagnosis
+start_diagnosis :-
+    write('Medical Diagnosis System'), nl,
+    write('Please answer the following questions with yes or no:'), nl,
+    diagnose(Disease).
+
+% Example query to start the diagnosis process
+% ?- start_diagnosis.
