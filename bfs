@@ -1,0 +1,34 @@
+
+edge(a, b, 4).
+edge(a, c, 2).
+edge(b, d, 5).
+edge(b, e, 10).
+edge(c, f, 3).
+edge(c, g, 8).
+edge(d, h, 7).
+edge(e, i, 4).
+edge(f, j, 6).
+edge(g, k, 5).
+
+heuristic(b, 3).
+heuristic(c, 5).
+heuristic(d, 7).
+heuristic(e, 6).
+heuristic(f, 2).
+heuristic(g, 4).
+heuristic(h, 5).
+heuristic(i, 3).
+heuristic(j, 1).
+heuristic(k, 0).
+
+best_first_search(Start, Goal, Path) :-
+    best_first_search([node(Start, 0)], Goal, [], Path).
+best_first_search([node(Goal, _)|Visited], Goal, _, Path) :-
+    reverse([Goal|Visited], Path).
+best_first_search([node(CurrentNode, _)|Rest], Goal, Visited, Path) :-
+    findall(node(NextNode, HValue),
+            (edge(CurrentNode, NextNode, _), \+ member(NextNode, Visited), heuristic(NextNode, HValue)),
+            NextNodes),
+    append(NextNodes, Rest, Queue),
+    best_first_search(Queue, Goal, [CurrentNode|Visited], Path).
+
