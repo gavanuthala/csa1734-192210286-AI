@@ -1,0 +1,27 @@
+connected(a, b).
+connected(a, c).
+
+% B is connected to D
+connected(b, d).
+
+% C is connected to E
+connected(c, e).
+
+% Rules for inference
+% If X is connected to Y and Y is connected to Z, then X is indirectly connected to Z
+indirectly_connected(X, Z) :-
+    connected(X, Y),
+    connected(Y, Z).
+
+% Backward chaining predicate
+% infer/2 uses connected/2 and indirectly_connected/2 to prove connections
+infer(X, Z) :-
+    connected(X, Z).
+infer(X, Z) :-
+    connected(X, Y),
+    infer(Y, Z).
+
+% Query to find if there is a connection from X to Z using backward chaining
+connected_to(X, Z) :-
+    infer(X, Z).
+
