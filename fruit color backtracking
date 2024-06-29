@@ -1,0 +1,22 @@
+% Facts: fruit(FruitName, Color).
+fruit(apple, red).
+fruit(apple, green).
+fruit(banana, yellow).
+fruit(grape, purple).
+fruit(grape, green).
+fruit(orange, orange).
+fruit(lemon, yellow).
+
+% Rule to find all fruits of a certain color
+find_fruits_by_color(Color, Fruits) :-
+    findall(Fruit, fruit(Fruit, Color), Fruits).
+
+% Rule to find the color of a certain fruit
+find_colors_by_fruit(Fruit, Colors) :-
+    findall(Color, fruit(Fruit, Color), Colors).
+
+% Query examples
+% To find all fruits of a certain color:
+% ?- find_fruits_by_color(yellow, Fruits).
+% To find all colors of a certain fruit:
+% ?- find_colors_by_fruit(apple, Colors).
